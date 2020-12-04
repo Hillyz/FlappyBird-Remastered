@@ -11,7 +11,7 @@ class Player(pg.sprite.Sprite):
         self.rect.center = (WIDTH//2, HEIGHT//2)
 
     def gravity(self):
-        self.rect.y +=1 
+        self.rect.y +=1
 
 
     def jump(self):
@@ -26,11 +26,16 @@ class Pipe(pg.sprite.Sprite):
 
 def main():
     #local variables
+    frame_counter = 0
     player = Player()
     all_sprites = pg.sprite.Group()
     all_sprites.add(player)
     # Game loop
     while True:
+        #Run game at set speed
+        clock.tick()
+        frame_counter += 1
+
         #game exit
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -41,7 +46,8 @@ def main():
                 player.jump()
 
         #Player movement
-        player.gravity()
+        if frame_counter % 2 == 0:
+            player.gravity()
 
 
         #Update
