@@ -10,7 +10,7 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH//2, HEIGHT//2)
         self.velocity = 0.5
-        self.pos = (WIDTH//2)
+        self.pos = (HEIGHT//2)
 
     def gravity(self):
         if self.velocity < 0.5:
@@ -29,19 +29,27 @@ class Player(pg.sprite.Sprite):
     def jump(self):
         self.velocity = -4
 
+    def collision(self, group2):
+        collision = pg.sprite.spritecollide(self, group2, False)
+        if collision:
+            return True
+
 
 #Pipe sprite
 class Pipe(pg.sprite.Sprite):
-    def __init__(self, y):
+    def __init__(self, h):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((40, 100))
+        self.image = pg.Surface((40, h))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
-        self.y = y
-        self.rect.topleft = (WIDTH, self.y)
+        self.h = h
+        self.pos = WIDTH
+        self.velocity = 0.1
+        self.rect.bottomleft = (WIDTH, deadzone)
 
     def move(self):
-        self.rect.x += 10
+        self.pos -= self.velocity
+        self.rect.x = self.pos
 
 def main():
     #local variables
@@ -50,7 +58,7 @@ def main():
     pipes = pg.sprite.Group()
     all_sprites = pg.sprite.Group()
     all_sprites.add(player)
-    pipe = Pipe(400)
+    pipe = Pipe(200)
     pipes.add(pipe)
     # Game loop
     while True:
@@ -72,6 +80,8 @@ def main():
             player.gravity()
 
 
+        if player.collision(pipes):
+            print("Player dead")
 
         for pipe in pipes:
             pipe.move()
