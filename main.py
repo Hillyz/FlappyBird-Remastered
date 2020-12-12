@@ -19,6 +19,7 @@ class Player(pg.sprite.Sprite):
             self.velocity += 0.015 #Acceleration
         #Limits movement to stay in screen
         if self.rect.y <= deadzone - 20 and self.pos <= deadzone-20:
+            ## NB Problem here?? --> Lag
             self.pos += self.velocity #Updates float value
             self.rect.y = int(self.pos) #Updates rect value as int
         else:
@@ -49,10 +50,13 @@ class Pipe(pg.sprite.Sprite):
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.h = h
+        #Positional x value for float
         self.pos = WIDTH
+
         self.velocity = 0.1
         self.rect.bottomleft = (WIDTH, space) #Space --> top or bot of screen
 
+    ## NB Problem here? --> Lag
     def move(self):
         self.pos -= self.velocity
         self.rect.x = self.pos
