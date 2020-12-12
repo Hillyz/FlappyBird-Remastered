@@ -10,25 +10,31 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH//2, HEIGHT//2)
         self.velocity = 0.5
+        #Positional variable to calculate float value for y-coordinate
         self.pos = (HEIGHT//2)
 
     def gravity(self):
+        #Caps speed
         if self.velocity < 0.75:
-            self.velocity += 0.015
+            self.velocity += 0.015 #Acceleration
+        #Limits movement to stay in screen
         if self.rect.y <= deadzone - 20 and self.pos <= deadzone-20:
-            self.pos += self.velocity
-            self.rect.y = int(self.pos)
+            self.pos += self.velocity #Updates float value
+            self.rect.y = int(self.pos) #Updates rect value as int
         else:
+            #Movement limits
             self.rect.y = deadzone - 20
             self.pos = deadzone - 20
-
+        #Movement limits top of screen
         if self.rect.y < 20 and self.pos < 20:
             self.rect.y = 20
             self.pos = 20
 
+    #Player action
     def jump(self):
         self.velocity = -2
 
+    #Collision function
     def collision(self, group2):
         collision = pg.sprite.spritecollide(self, group2, False)
         if collision:
@@ -45,7 +51,7 @@ class Pipe(pg.sprite.Sprite):
         self.h = h
         self.pos = WIDTH
         self.velocity = 0.1
-        self.rect.bottomleft = (WIDTH, space)
+        self.rect.bottomleft = (WIDTH, space) #Space --> top or bot of screen
 
     def move(self):
         self.pos -= self.velocity
@@ -56,10 +62,10 @@ def main():
     frame_counter = 0
     player = Player()
     pipes = pg.sprite.Group()
-    all_sprites = pg.sprite.Group()
-    all_sprites.add(player)
-    pipe1 = Pipe(200, deadzone)
-    pipe2 = Pipe(HEIGHT-250, 250)
+    players = pg.sprite.Group()
+    players.add(player)
+    pipe1 = Pipe(200, deadzone) #Lower pipe
+    pipe2 = Pipe(HEIGHT-250, 250) #Higher pipe
     pipes.add(pipe1, pipe2)
     # Game loop
     while True:
@@ -67,23 +73,26 @@ def main():
         clock.tick()
         frame_counter += 1
 
-        #game exit
+        #Events
         for event in pg.event.get():
+            #Game exit
             if event.type == pg.QUIT:
                 run = False
                 pg.quit()
                 sys.exit()
+            #Player actions
             elif event.type == pg.MOUSEBUTTONUP:
                 player.jump()
 
-        #Player movement
+        #Player natural movement
         if frame_counter % 3 == 0:
             player.gravity()
 
-
+        #Check for collisions
         if player.collision(pipes):
             print("Player dead")
 
+        #Pipe movement and spawning
         for pipe in pipes:
             pipe.move()
             if pipe.rect.x < 0:
@@ -94,12 +103,12 @@ def main():
                 pipes.add(pipe1, pipe2)
 
         #Update
-        all_sprites.update()
+        players.update()
         pipes.update()
 
         #draw
         SCREEN.fill(BLACK)
-        all_sprites.draw(SCREEN)
+        players.draw(SCREEN)
         pipes.draw(SCREEN)
 
         #Update display
