@@ -13,8 +13,8 @@ class Player(pg.sprite.Sprite):
         self.pos = (HEIGHT//2)
 
     def gravity(self):
-        if self.velocity < 0.5:
-            self.velocity += 0.05
+        if self.velocity < 0.75:
+            self.velocity += 0.015
         if self.rect.y <= deadzone - 20 and self.pos <= deadzone-20:
             self.pos += self.velocity
             self.rect.y = int(self.pos)
@@ -27,7 +27,7 @@ class Player(pg.sprite.Sprite):
             self.pos = 20
 
     def jump(self):
-        self.velocity = -4
+        self.velocity = -2
 
     def collision(self, group2):
         collision = pg.sprite.spritecollide(self, group2, False)
@@ -37,7 +37,7 @@ class Player(pg.sprite.Sprite):
 
 #Pipe sprite
 class Pipe(pg.sprite.Sprite):
-    def __init__(self, h):
+    def __init__(self, h, space):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, h))
         self.image.fill(GREEN)
@@ -45,7 +45,7 @@ class Pipe(pg.sprite.Sprite):
         self.h = h
         self.pos = WIDTH
         self.velocity = 0.1
-        self.rect.bottomleft = (WIDTH, deadzone)
+        self.rect.bottomleft = (WIDTH, space)
 
     def move(self):
         self.pos -= self.velocity
@@ -58,8 +58,9 @@ def main():
     pipes = pg.sprite.Group()
     all_sprites = pg.sprite.Group()
     all_sprites.add(player)
-    pipe = Pipe(200)
-    pipes.add(pipe)
+    pipe1 = Pipe(200, deadzone)
+    pipe2 = Pipe(HEIGHT-250, 250)
+    pipes.add(pipe1, pipe2)
     # Game loop
     while True:
         #Run game at set speed
@@ -85,6 +86,12 @@ def main():
 
         for pipe in pipes:
             pipe.move()
+            if pipe.rect.x < 0:
+                pipe.remove(pipes)
+            if frame_counter % 4000 == 0:
+                pipe1 = Pipe(200, deadzone)
+                pipe2 = Pipe(HEIGHT-250, 250)
+                pipes.add(pipe1, pipe2)
 
         #Update
         all_sprites.update()
