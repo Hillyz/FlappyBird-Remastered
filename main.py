@@ -148,6 +148,7 @@ def main():
         if player.collision(pipes):
             gamestate = "menu"
             print(f"highscore: {highscore}")
+            return main()
 
 
         #Pipe movement
