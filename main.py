@@ -1,5 +1,6 @@
 from Flappyglobals import *
 import sys
+import random
 
 #Player sprite
 class Player(pg.sprite.Sprite):
@@ -77,6 +78,7 @@ def main():
     pipe1 = Pipe(200, deadzone) #Lower pipe
     pipe2 = Pipe(HEIGHT-250, 250) #Higher pipe
     pipes.add(pipe1, pipe2)
+    pipe_diff = 300
 
     # Game loop
     while True:
@@ -104,15 +106,17 @@ def main():
             pass
             #print("Player dead")
 
-        #Pipe movement and spawning
+        #Pipe movement
         for pipe in pipes:
             pipe.move()
             if pipe.rect.x < 0:
                 pipe.remove(pipes)
 
+        #Spawn pipes
         if frame_counter % 4000 == 0:
-            pipe1 = Pipe(200, deadzone)
-            pipe2 = Pipe(HEIGHT-250, 250)
+            pipe_len = random.randint(120, 330) #Random length of pipe
+            pipe1 = Pipe(pipe_len, deadzone) #Random bot pipe
+            pipe2 = Pipe(HEIGHT-pipe_len-pipe_diff, HEIGHT-pipe_len-pipe_diff) #Random top pipe
             pipes.add(pipe1, pipe2)
 
         #Update
