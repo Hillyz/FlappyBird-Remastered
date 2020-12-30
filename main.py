@@ -5,8 +5,8 @@ import sys
 class Player(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((40, 40))
-        self.image.fill(RED)
+        self.image = pg.transform.scale(player_img, (40, 40))
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH//2, HEIGHT//2)
         self.velocity = 0.5
@@ -14,12 +14,10 @@ class Player(pg.sprite.Sprite):
         self.pos = (HEIGHT//2)
 
     def gravity(self):
-        #Caps speed
-        if self.velocity < 0.75:
-            self.velocity += 0.015 #Acceleration
+        g = 0.007
+        self.velocity += g #Acceleration
         #Limits movement to stay in screen
-        if self.rect.y <= deadzone - 20 and self.pos <= deadzone-20:
-            ## NB Problem here?? --> Lag
+        if self.rect.y <= deadzone - 20:
             self.pos += self.velocity #Updates float value
             self.rect.y = int(self.pos) #Updates rect value as int
         else:
@@ -33,7 +31,7 @@ class Player(pg.sprite.Sprite):
 
     #Player action
     def jump(self):
-        self.velocity = -2
+        self.velocity = -1.4
 
     #Collision function
     def collision(self, group2):
@@ -46,8 +44,11 @@ class Player(pg.sprite.Sprite):
 class Pipe(pg.sprite.Sprite):
     def __init__(self, h, space):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((40, h))
-        self.image.fill(GREEN)
+        if space == deadzone:
+            self.image = pg.transform.scale(pipe_img1, (40, h))
+        else:
+            self.image = pg.transform.scale(pipe_img2, (40, h))
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.h = h
         #Positional x value for float
@@ -56,12 +57,17 @@ class Pipe(pg.sprite.Sprite):
         self.velocity = 0.1
         self.rect.bottomleft = (WIDTH, space) #Space --> top or bot of screen
 
-    ## NB Problem here? --> Lag
     def move(self):
         self.pos -= self.velocity
         self.rect.x = self.pos
 
 def main():
+    #Load graphics
+    #background = pg.image.load("Background.png").convert()
+    #background_rect = background.get_rect()
+    #player_img = pg.image.load("Bird1.png").convert()
+    #pipe_img = pg.image.load("Pipe_sprite.png").convert()
+
     #local variables
     frame_counter = 0
     player = Player()
@@ -71,6 +77,7 @@ def main():
     pipe1 = Pipe(200, deadzone) #Lower pipe
     pipe2 = Pipe(HEIGHT-250, 250) #Higher pipe
     pipes.add(pipe1, pipe2)
+
     # Game loop
     while True:
         #Run game at set speed
@@ -94,17 +101,19 @@ def main():
 
         #Check for collisions
         if player.collision(pipes):
-            print("Player dead")
+            pass
+            #print("Player dead")
 
         #Pipe movement and spawning
         for pipe in pipes:
             pipe.move()
             if pipe.rect.x < 0:
                 pipe.remove(pipes)
-            if frame_counter % 4000 == 0:
-                pipe1 = Pipe(200, deadzone)
-                pipe2 = Pipe(HEIGHT-250, 250)
-                pipes.add(pipe1, pipe2)
+
+        if frame_counter % 4000 == 0:
+            pipe1 = Pipe(200, deadzone)
+            pipe2 = Pipe(HEIGHT-250, 250)
+            pipes.add(pipe1, pipe2)
 
         #Update
         players.update()
@@ -112,6 +121,7 @@ def main():
 
         #draw
         SCREEN.fill(BLACK)
+        SCREEN.blit(background, background_rect)
         players.draw(SCREEN)
         pipes.draw(SCREEN)
 

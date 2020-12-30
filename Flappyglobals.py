@@ -12,3 +12,11 @@ pg.display.set_caption("FLAPPY BIRD (REMASTERED(2020 EDITION))")
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
+
+
+#Load graphics
+background = pg.image.load("Background.png").convert()
+background_rect = background.get_rect()
+player_img = pg.image.load("Bird1.png").convert()
+pipe_img1 = pg.image.load("Pipe_sprite.png").convert()
+pipe_img2 = pg.image.load("Pipe_sprite2.png").convert()
