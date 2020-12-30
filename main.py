@@ -97,6 +97,31 @@ def main():
     score_delay = 0
     gamestate = "menu" #Player state
 
+    #Menu loop
+    while gamestate == "menu":
+        #Events
+        for event in pg.event.get():
+            #Game exit
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                 pos = pg.mouse.get_pos()
+                 if playbutton.rect.collidepoint(pos):
+                     gamestate = "play"
+
+
+        #draw
+        SCREEN.fill(BLACK)
+        SCREEN.blit(background, background_rect)
+        menusprites.draw(SCREEN)
+        players.draw(SCREEN)
+        pipes.draw(SCREEN)
+        draw_text(SCREEN, str(score), 50, 15)
+        draw_text(SCREEN, f"Highscore: {highscore}", WIDTH-100, 15)
+
+        #Update display
+        pg.display.update()
 
     # Game loop
     while gamestate == "play":
@@ -159,30 +184,6 @@ def main():
         #Update display
         pg.display.update()
 
-    while gamestate == "menu":
-        #Events
-        for event in pg.event.get():
-            #Game exit
-            if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
-                 pos = pg.mouse.get_pos()
-                 if playbutton.rect.collidepoint(pos):
-                     gamestate = "play"
-
-
-        #draw
-        SCREEN.fill(BLACK)
-        SCREEN.blit(background, background_rect)
-        menusprites.draw(SCREEN)
-        players.draw(SCREEN)
-        pipes.draw(SCREEN)
-        draw_text(SCREEN, str(score), 50, 15)
-        draw_text(SCREEN, f"Highscore: {highscore}", WIDTH-100, 15)
-
-        #Update display
-        pg.display.update()
 
 
 main()
