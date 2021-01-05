@@ -24,7 +24,7 @@ class Player(pg.sprite.Sprite):
         else:
             #Player dies
             gamestate = "menu"
-            print(f"highscore: {highscore}")
+            #print(f"highscore: {highscore}")
             main()
 
         #Movement limits top of screen
@@ -93,7 +93,6 @@ def main():
     pipes.add(pipe1, pipe2)
     pipe_diff = 280 #Constant for the room between a pair of pipes
     score = 0
-    highscore = 0
     score_delay = 0
     gamestate = "menu" #Player state
 
@@ -118,7 +117,6 @@ def main():
         players.draw(SCREEN)
         pipes.draw(SCREEN)
         draw_text(SCREEN, str(score), 50, 15)
-        draw_text(SCREEN, f"Highscore: {highscore}", WIDTH-100, 15)
 
         #Update display
         pg.display.update()
@@ -147,7 +145,6 @@ def main():
         #Check for collisions
         if player.collision(pipes):
             gamestate = "menu"
-            print(f"highscore: {highscore}")
             return main()
 
 
@@ -160,8 +157,6 @@ def main():
         if pipe.rect.x == player.rect.x and score_delay >= 0:
             score +=1
             score_delay = -20
-            if score > highscore:
-                highscore = score
 
         #Spawn pipes
         if frame_counter % 4000 == 0:
