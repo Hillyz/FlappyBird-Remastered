@@ -3,6 +3,10 @@ import sys
 import random
 from math import *
 
+def sigma(x):
+    return 180 / (1 + e**(-x)) - 90
+
+
 #Player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self):
@@ -10,13 +14,13 @@ class Player(pg.sprite.Sprite):
         self.image = pg.transform.scale(player_img, (40, 40))
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH//2, HEIGHT//4)
-        self.velocity = 0.5
+        self.rect.center = (WIDTH//2, HEIGHT//3)
+        self.velocity = 20
         #Positional variable to calculate float value for y-coordinate
         self.pos = (HEIGHT//4)
 
     def gravity(self):
-        g = 0.007
+        g = 7
         self.velocity += g #Acceleration
         #Limits movement to stay in screen
         if self.rect.y <= deadzone - 20:
@@ -34,12 +38,13 @@ class Player(pg.sprite.Sprite):
 
     #Player action
     def jump(self):
-        self.velocity = -1.4
+        self.velocity = -40
 
     def bird_rotation(self):
-        angle = pi/2 - 0.001*self.velocity
-        rotated_image = pg.transform.rotate(self.image, angle)
-        self.image = rotated_image
+        angle = sigma(-self.velocity*0.01)
+        new_image = pg.transform.scale(player_img, (40, 40))
+        new_image.set_colorkey(BLACK)
+        self.image = pg.transform.rotate(new_image, angle)
 
 
     #Collision function
@@ -63,7 +68,7 @@ class Pipe(pg.sprite.Sprite):
         #Positional x value for float
         self.pos = WIDTH
 
-        self.velocity = 0.1
+        self.velocity = 5
         self.rect.bottomleft = (WIDTH, space) #Space --> top or bot of screen
 
     def move(self):
@@ -99,7 +104,6 @@ def main():
     pipes.add(pipe1, pipe2)
     pipe_diff = 280 #Constant for the room between a pair of pipes
     score = 0
-    score_delay = 0
     gamestate = "menu" #Player state
 
     #Menu loop
@@ -130,9 +134,8 @@ def main():
     # Game loop
     while gamestate == "play":
         #Run game at set speed
-        clock.tick()
+        clock.tick(FPS)
         frame_counter += 1
-        score_delay += 1
 
         #Events
         for event in pg.event.get():
@@ -161,16 +164,14 @@ def main():
             if pipe.rect.x < 0:
                 pipe.remove(pipes)
 
-        if pipe.rect.x == player.rect.x and score_delay >= 0:
-            score +=1
-            score_delay = -20
 
         #Spawn pipes
-        if frame_counter % 4000 == 0:
+        if frame_counter % 60 == 0:
             pipe_len = random.randint(120, 330) #Random length of pipe
             pipe1 = Pipe(pipe_len, deadzone) #Random bot pipe
             pipe2 = Pipe(HEIGHT-pipe_len-pipe_diff, HEIGHT-pipe_len-pipe_diff) #Random top pipe
             pipes.add(pipe1, pipe2)
+            score += 1
 
 
         #Update
