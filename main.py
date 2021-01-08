@@ -1,6 +1,7 @@
 from Flappyglobals import *
 import sys
 import random
+from math import *
 
 #Player sprite
 class Player(pg.sprite.Sprite):
@@ -24,7 +25,6 @@ class Player(pg.sprite.Sprite):
         else:
             #Player dies
             gamestate = "menu"
-            #print(f"highscore: {highscore}")
             main()
 
         #Movement limits top of screen
@@ -35,6 +35,12 @@ class Player(pg.sprite.Sprite):
     #Player action
     def jump(self):
         self.velocity = -1.4
+
+    def bird_rotation(self):
+        angle = pi/2 - 0.001*self.velocity
+        rotated_image = pg.transform.rotate(self.image, angle)
+        self.image = rotated_image
+
 
     #Collision function
     def collision(self, group2):
@@ -141,6 +147,7 @@ def main():
         #Player natural movement
         if frame_counter % 3 == 0:
             player.gravity()
+            player.bird_rotation()
 
         #Check for collisions
         if player.collision(pipes):
