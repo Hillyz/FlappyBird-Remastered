@@ -1,13 +1,14 @@
 import pygame as pg
 
 pg.init()
+pg.mixer.pre_init(44100, 16, 2, 4096) #frequency, size, channels, buffersize
 clock = pg.time.Clock()
 FPS = 60
 WIDTH = 600
 HEIGHT = 800
 deadzone = 700
 SCREEN = pg.display.set_mode((WIDTH, HEIGHT))
-pg.display.set_caption("FLAPPY BIRD (REMASTERED(2020 EDITION))")
+pg.display.set_caption("FLAPPY BIRD (REMASTERED(2020/2021 EDITION))")
 
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
@@ -32,3 +33,7 @@ pipe_img2 = pg.image.load("Pipe_sprite2.png").convert()
 play_button = pg.image.load("Play.png").convert()
 score = 0
 highscore = 0
+
+#Load sounds
+woosh_sound = pg.mixer.Sound("WOosh.wav")
+score_sound = pg.mixer.Sound("pling.wav")

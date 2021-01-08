@@ -167,6 +167,7 @@ def main():
                 #Player actions
                 elif event.type == pg.MOUSEBUTTONUP:
                     player.jump()
+                    woosh_sound.play()
 
             #Player natural movement
             if frame_counter % 3 == 0:
@@ -193,6 +194,8 @@ def main():
                 pipe2 = Pipe(HEIGHT-pipe_len-pipe_diff, HEIGHT-pipe_len-pipe_diff) #Random top pipe
                 pipes.add(pipe1, pipe2)
                 score += 1
+                if score > 0:
+                    score_sound.play()
                 if score > highscore:
                     highscore = score
 
