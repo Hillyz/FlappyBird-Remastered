@@ -39,8 +39,6 @@ player_imgs.append(player_img2)
 pipe_img1 = pg.image.load("Pipe_sprite.png").convert()
 pipe_img2 = pg.image.load("Pipe_sprite2.png").convert()
 play_button = pg.image.load("Play.png").convert()
-score = 0
-highscore = 0
 
 #Load sounds
 woosh_sound = pg.mixer.Sound("WOosh.wav")
