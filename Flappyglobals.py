@@ -43,11 +43,16 @@ play_button = pg.image.load("Play.png").convert()
 #Load sounds
 woosh_sound = pg.mixer.Sound("WOosh.wav")
 score_sound = pg.mixer.Sound("pling.wav")
-#highscore_sound = pg.mixer.Sound("highscore.wav")
+highscore_sound = pg.mixer.Sound("highscore.wav")
+boink_sound = pg.mixer.Sound("boink.wav")
+oof_sound = pg.mixer.Sound("oof.wav")
+
 #Volume settings
-woosh_sound.set_volume(0.1)
+woosh_sound.set_volume(0.2)
 score_sound.set_volume(0.45)
-#highscore_sound.set_volume(1)
+highscore_sound.set_volume(1)
+boink_sound.set_volume(1)
+oof_sound.set_volume(1)
 
 
 #Global functions
@@ -57,6 +62,7 @@ def draw_text(surface, text, x, y):
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
     surface.blit(text_surface, text_rect)
+
 
 #Function to calculate acceleration
 #Used for falling speed and rotation of bird

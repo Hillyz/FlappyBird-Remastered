@@ -103,7 +103,7 @@ def main():
 
     #Local variables
     frame_counter = 0
-    pipe_diff = 280 #Constant for the room between a pair of pipes
+    pipe_diff = 380 #Constant for the room between a pair of pipes
     score = 0
     init_highscore = 0
     highscore = init_highscore
@@ -137,7 +137,7 @@ def main():
             #Checks if there is a new high score
             if highscore > init_highscore:
                 init_highscore = highscore
-                #highscore_sound.play()
+                highscore_sound.play()
 
             #Draws everything on screen
             SCREEN.fill(BLACK) #Clear screen
@@ -157,6 +157,7 @@ def main():
 
             #Update display
             pg.display.update()
+
 
     #Nested function for play gamestate
     def play():
@@ -202,6 +203,11 @@ def main():
 
             #Check for collisions
             if player.collision(pipes) or player.rect.y >= deadzone:
+                if player.collision(pipes):
+                    boink_sound.play()
+                else:
+                    oof_sound.play()
+
                 player.dead = True
                 #Changes gamestate from playing to menu
                 return menu()
