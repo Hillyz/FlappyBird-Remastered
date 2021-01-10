@@ -103,7 +103,7 @@ def main():
 
     #Local variables
     frame_counter = 0
-    pipe_diff = 380 #Constant for the room between a pair of pipes
+    pipe_diff = 250 #Constant for the room between a pair of pipes
     score = 0
     init_highscore = 0
     highscore = init_highscore
