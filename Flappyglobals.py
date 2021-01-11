@@ -25,7 +25,7 @@ WHITE = (255, 255, 255)
 ORANGE = (255,140,0)
 
 #Font stuff
-font_name = pg.font.match_font('arial')
+font_name = "font.ttf"
 font = pg.font.Font(font_name, 44)
 
 #Load graphics
@@ -56,7 +56,7 @@ oof_sound.set_volume(1)
 
 
 #Global functions
-#Function to show text on screen, really useful in general
+#General function to show text on screen
 def draw_text(surface, text, x, y):
     text_surface = font.render(text, True, ORANGE)
     text_rect = text_surface.get_rect()
