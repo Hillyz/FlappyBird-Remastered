@@ -1,8 +1,26 @@
 #Import modules
-import pygame as pg
 import sys
 import random
 from math import *
+import os
+
+#Install pygame if it doesn't already exist
+#Import if it exists
+try:
+    import pygame as pg
+except:
+    try:
+        print("Attempting to install pygame...")
+        os.system('py -m pip install pygame')
+        import pygame as pg
+    except:
+        try:
+            os.system('python -m pip install pygame')
+            import pygame as pg
+        except:
+            print("Error, failed to install pygame libraries")
+            input("Press enter to exit...")
+            quit()
 
 #Initialize pygame
 pg.init()
@@ -51,8 +69,8 @@ oof_sound = pg.mixer.Sound("oof.wav")
 woosh_sound.set_volume(0.2)
 score_sound.set_volume(0.45)
 highscore_sound.set_volume(1)
-boink_sound.set_volume(1)
-oof_sound.set_volume(1)
+boink_sound.set_volume(0.9)
+oof_sound.set_volume(0.9)
 
 
 #Global functions
