@@ -15,3 +15,7 @@ setup(  name = "FlappyBird-Remastered",
         description = "FlappyBird game",
         options = {"build_exe": build_exe_options},
         executables = [Executable("main.py", base=base)])
+
+
+##Jeg har ikke skrevet noe av denne koden selv, alt er funnet og lastet ned
+##Dette er nødvendig for å lage en .exe fil av programmet slik at selv de som ikke har lastet ned python kan nyte spillopplevelsen
