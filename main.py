@@ -41,7 +41,7 @@ def main():
             keys = pg.key.get_pressed()
             for event in pg.event.get():
                 #Game exit
-                if event.type == pg.QUIT:
+                if event.type == pg.QUIT or keys[pg.K_ESCAPE]:
                     pg.quit()
                     sys.exit()
             #Return to menu screen
@@ -56,9 +56,11 @@ def main():
             pipes.draw(SCREEN)
 
             #Draw help on screen
-            draw_text(SCREEN, "HOW TO PLAY: ", WIDTH//2, HEIGHT//3)
-            draw_text(SCREEN, "Just click the mouse", WIDTH//2, HEIGHT//2)
-            draw_text(SCREEN, "To return to menu", WIDTH//2, HEIGHT//1.2)
+            draw_text(SCREEN, "HOW TO PLAY: ", WIDTH//2, HEIGHT//4)
+            draw_text(SCREEN, "Just click the mouse", WIDTH//2, HEIGHT//3)
+            draw_text(SCREEN, "To quit: ", WIDTH//2, HEIGHT//1.6)
+            draw_text(SCREEN, "Press escape", WIDTH//2, HEIGHT//1.5)
+            draw_text(SCREEN, "Return to menu:", WIDTH//2, HEIGHT//1.2)
             draw_text(SCREEN, "Press backspace", WIDTH//2, HEIGHT//1.1)
 
             #Update
@@ -73,10 +75,12 @@ def main():
 
         #Menu loop
         while True:
+
+            keys = pg.key.get_pressed()
             #Event loop
             for event in pg.event.get():
                 #Game exit
-                if event.type == pg.QUIT:
+                if event.type == pg.QUIT or keys[pg.K_ESCAPE]:
                     pg.quit()
                     sys.exit()
 
