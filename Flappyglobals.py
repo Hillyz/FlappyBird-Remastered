@@ -44,7 +44,7 @@ ORANGE = (255,140,0)
 
 #Font stuff
 font_name = "font.ttf"
-font = pg.font.Font(font_name, 44)
+font = pg.font.Font(font_name, 38)
 
 #Load graphics
 player_imgs = []
@@ -57,6 +57,7 @@ player_imgs.append(player_img2)
 pipe_img1 = pg.image.load("Pipe_sprite.png").convert()
 pipe_img2 = pg.image.load("Pipe_sprite2.png").convert()
 play_button = pg.image.load("Play.png").convert()
+help_button = pg.image.load("Helppng.png").convert()
 
 #Load sounds
 woosh_sound = pg.mixer.Sound("WOosh.wav")

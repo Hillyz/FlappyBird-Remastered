@@ -77,23 +77,25 @@ class Pipe(pg.sprite.Sprite):
         self.rect.x -= self.velocity
 
 
-#Sprite for the play button that shows up in the menu
+#Sprite for the button that shows up in the menu
 #Could perhaps simply be an image, but I thought of this first so here it is
-class Playbutton(pg.sprite.Sprite):
-    def __init__(self):
+class Menubutton(pg.sprite.Sprite):
+    def __init__(self, img, h):
         pg.sprite.Sprite.__init__(self)
-        self.image = play_button
+        self.image = img
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH//2, HEIGHT//2)
+        self.rect.center = (WIDTH//2, h)
 
 
 #Main function where everything is executed
 def main():
 
     #Initialize sprites and add to group
-    playbutton = Playbutton() #Initializes object
+    playbutton = Menubutton(play_button, HEIGHT//2) #Initializes object
+    helpbutton = Menubutton(help_button, HEIGHT//1.2)
     menusprites = pg.sprite.Group() #Group for sprites in the menu
     menusprites.add(playbutton)
+    menusprites.add(helpbutton)
     pipes = pg.sprite.Group()
     players = pg.sprite.Group()
     player = Player()
@@ -107,6 +109,34 @@ def main():
     score = 0
     init_highscore = 0
     highscore = init_highscore
+
+
+    def help():
+        while True:
+            #Event loop
+            keys = pg.key.get_pressed()
+            for event in pg.event.get():
+                #Game exit
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
+            if keys[pg.K_BACKSPACE]:
+                return menu()
+
+
+            #Draw
+            SCREEN.fill(BLACK) #Clear screen
+            SCREEN.blit(background, background_rect)
+            players.draw(SCREEN)
+            pipes.draw(SCREEN)
+            draw_text(SCREEN, "HOW TO PLAY: ", WIDTH//2, HEIGHT//3)
+            draw_text(SCREEN, "Just click the mouse", WIDTH//2, HEIGHT//2)
+            draw_text(SCREEN, "To return to menu", WIDTH//2, HEIGHT//1.2)
+            draw_text(SCREEN, "Press backspace", WIDTH//2, HEIGHT//1.1)
+
+
+            #Update
+            pg.display.update()
 
     #Nested function for menu screen
     def menu():
@@ -133,6 +163,9 @@ def main():
                          player.dead = False
                          #Ends menu gamestate, playing starts
                          return play()
+
+                     if helpbutton.rect.collidepoint(pos):
+                        return help()
 
             #Checks if there is a new high score
             if highscore > init_highscore:
