@@ -1,90 +1,9 @@
-#Import globals
+#Import globals and classes
 from Flappyglobals import *
-
-
-
-#Player sprite
-class Player(pg.sprite.Sprite):
-    #Initialize class
-    def __init__(self):
-        pg.sprite.Sprite.__init__(self)
-        self.index = 0 #Used to change image for animation
-        self.image = pg.transform.scale(player_imgs[self.index%2], (40, 40)) #Player graphic
-        self.image.set_colorkey(BLACK) #Removes black square behind graphic on screen
-        #Sprites are defined as rects, which makes it easy to detect collision and use coordinates
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH//2, HEIGHT//3) #Player spawn point
-        self.velocity = 20 #Player initial falling speed
-        self.dead = True #Boolean to determine if dead or not, used to determine gamestate
-
-    #Function for falling, based on downwards acceleration
-    def gravity(self):
-        g = 7
-        self.velocity += g #Acceleration
-        #Limits movement to stay in screen
-        if self.rect.y <= deadzone:
-            self.rect.y += self.velocity #Updates velocity, bird accelerates
-        else:
-            #Player dies
-            self.dead = True
-
-
-        #Movement limits top of screen
-        if self.rect.y < 20:
-            self.rect.y = 20
-
-
-    #Player action
-    #Makes the bird do its classic jump by changing the velocity to go in the opposite direction
-    def jump(self):
-        self.velocity = -40
-
-    #Function that makes the bird rotate around itself based on velocity
-    def bird_rotation(self):
-        angle = sigma(-self.velocity*0.01) #calculates angle in degrees based on velocity
-        new_image = pg.transform.scale(player_imgs[self.index%2], (40, 40))
-        new_image.set_colorkey(BLACK) #Removes black square
-        self.image = pg.transform.rotate(new_image, angle)#Rotates the new image
-
-
-    #Collision function
-    def collision(self, group2):
-        collision = pg.sprite.spritecollide(self, group2, False) #Checks collision
-        if collision:
-            return True
-
-
-#Pipe sprite
-#Based on rect
-class Pipe(pg.sprite.Sprite):
-    #Initialize sprite
-    def __init__(self, len, space):
-        pg.sprite.Sprite.__init__(self)
-        #Determines whether the pipe is on top or bottom of the screen
-        if space == deadzone:
-            self.image = pg.transform.scale(pipe_img1, (40, len))
-        else:
-            self.image = pg.transform.scale(pipe_img2, (40, len))
-
-        self.image.set_colorkey(BLACK) #Removes black square
-        self.rect = self.image.get_rect()
-        self.len = len #Undefined length variable for random height for the pipes
-        self.velocity = 5 #Speed
-        self.rect.bottomleft = (WIDTH, space) #Space --> top or bot of screen
-
-    #Function to move sprite from right to left
-    def move(self):
-        self.rect.x -= self.velocity
-
-
-#Sprite for the button that shows up in the menu
-#Could perhaps simply be an image, but I thought of this first so here it is
-class Menubutton(pg.sprite.Sprite):
-    def __init__(self, img, h):
-        pg.sprite.Sprite.__init__(self)
-        self.image = img
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH//2, h)
+from player_class import *
+from pipe_class import *
+from button_class import *
+from highscore_class import *
 
 
 #Main function where everything is executed
@@ -106,12 +25,17 @@ def main():
     #Local variables
     frame_counter = 0
     pipe_diff = 250 #Constant for the room between a pair of pipes
-    score = 0
-    init_highscore = 0
-    highscore = init_highscore
+    final_score = 0
+    score = final_score
+
+    #Load highscore
+    highscore = HighScore()
+    highscore.load()
 
 
+    #Nested function for help screen
     def help():
+
         while True:
             #Event loop
             keys = pg.key.get_pressed()
@@ -120,6 +44,7 @@ def main():
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
+            #Return to menu screen
             if keys[pg.K_BACKSPACE]:
                 return menu()
 
@@ -129,21 +54,22 @@ def main():
             SCREEN.blit(background, background_rect)
             players.draw(SCREEN)
             pipes.draw(SCREEN)
+
+            #Draw help on screen
             draw_text(SCREEN, "HOW TO PLAY: ", WIDTH//2, HEIGHT//3)
             draw_text(SCREEN, "Just click the mouse", WIDTH//2, HEIGHT//2)
             draw_text(SCREEN, "To return to menu", WIDTH//2, HEIGHT//1.2)
             draw_text(SCREEN, "Press backspace", WIDTH//2, HEIGHT//1.1)
-
 
             #Update
             pg.display.update()
 
     #Nested function for menu screen
     def menu():
+
         #Call nonlocal variables
-        nonlocal highscore
-        nonlocal init_highscore
         nonlocal score
+        nonlocal final_score
 
         #Menu loop
         while True:
@@ -167,10 +93,8 @@ def main():
                      if helpbutton.rect.collidepoint(pos):
                         return help()
 
-            #Checks if there is a new high score
-            if highscore > init_highscore:
-                init_highscore = highscore
-                highscore_sound.play()
+            final_score = score
+            highscore.new_score(final_score)
 
             #Draws everything on screen
             SCREEN.fill(BLACK) #Clear screen
@@ -185,7 +109,7 @@ def main():
             else:
                 score = 0
 
-            draw_text(SCREEN, f"HIGHSCORE: {highscore}", WIDTH//2, 200)
+            draw_text(SCREEN, f"HIGHSCORE: {highscore.highscore}", WIDTH//2, 200)
             menusprites.draw(SCREEN)
 
             #Update display
@@ -194,10 +118,10 @@ def main():
 
     #Nested function for play gamestate
     def play():
+
         #variables
         nonlocal frame_counter
         nonlocal score
-        nonlocal highscore
         score = -1 #Begins at -1 instead of 0 to make the algorithm to count score easier
 
         #Clear sprite groups to reset screen
@@ -267,9 +191,6 @@ def main():
                 #If to quick fix score starting at -1
                 if score > 0:
                     score_sound.play()
-                #Checks if a current score is the highest so far
-                if score > highscore:
-                    highscore = score
 
 
             #Update
